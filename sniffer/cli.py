@@ -1,9 +1,7 @@
 from argparse import ArgumentParser
 
-
-def filter_args(args):
-    return []
-
-
 parser = ArgumentParser()
-parser.add_argument("-p", help="port for sniffering")
+parser.add_argument("-p", help="don't save pcap file", action="store_false")
+parser.add_argument("-v", help="print packets?", action="store_true")
+parser.add_argument("--count", help="how many packets should be collected",
+                    default=10, type=int)

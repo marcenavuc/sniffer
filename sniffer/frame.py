@@ -15,4 +15,6 @@ class EthernetFrame:
         return ':'.join(bytes_str).upper()
 
     def __str__(self):
-        return f"Source MAC: {self.source_mac}, Target MAC {self.destination_mac}, Protocol: {self.ether_type}"
+        return "Source MAC: {}, Target MAC: {}, Protocol: {}".format(
+            self.source_mac, self.destination_mac, self.ether_type
+        )

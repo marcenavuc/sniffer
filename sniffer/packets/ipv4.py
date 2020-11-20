@@ -13,7 +13,7 @@ class IPv4(Packet):
         flags_offset = int.from_bytes(raw_packet[6:8], byteorder='big')
         self.flags = flags_offset >> 13
         self.offset = (flags_offset & 127) * 3
-        self.ttl, self.protocol = struct.unpack('! B B', raw_packet[8:10])
+        self.time_to_live, self.protocol = struct.unpack('! B B', raw_packet[8:10])
         self.source_ip = self.ipv4(raw_packet[12:16])
         self.target_ip = self.ipv4(raw_packet[16:20])
         self.data = raw_packet[self.header_len:]
@@ -23,4 +23,7 @@ class IPv4(Packet):
         return '.'.join(map(str, address))
 
     def __str__(self):
-        return f'IPv4 Packet: Header length: {self.header_len}, Protocol: {self.protocol}, Target: {self.target_ip}, Source: {self.source_ip} '
+        return "IPv4 Packet: Header_lenght: {}, Protocol: {}, Target: {}, " \
+               "Source: {}".format(
+            self.header_len, self.protocol, self.target_ip, self.source_ip
+        )

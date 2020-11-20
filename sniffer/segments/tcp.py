@@ -5,10 +5,13 @@ from sniffer.segments.segment import Segment
 
 
 class TCP(Segment):
+    """
+    https://ru.wikipedia.org/wiki/Transmission_Control_Protocol
+    """
 
     def __init__(self, raw_segment: bytes):
-        self.source_port, self.target_port, self.sequence, \
-        self.acknowledgement = struct.unpack('! H H L L', raw_segment[:12])
+        self.source_port, self.target_port, self.sequence_number, \
+        self.acknowledgement_number = struct.unpack('! H H L L', raw_segment[:12])
         flags = raw_segment[14]
         self.urg = (flags & 32) >> 5
         self.ack = (flags & 16) >> 4
@@ -25,8 +28,8 @@ class TCP(Segment):
                'Acknowledgement: {} Flags: URG: {} ACK: {} PSH: {} RST: {} ' \
                'SYN: {} FIN: {} Window size: {} URG pointer: {} \nData: \n{}' \
             .format(
-            self.source_port, self.target_port, self.sequence,
-            self.acknowledgement, self.urg, self.ack, self.psh, self.rst,
-            self.syn, self.fin, self.window_size, self.urg_pointer,
+            self.source_port, self.target_port, self.sequence_number,
+            self.acknowledgement_number, self.urg, self.ack, self.psh,
+            self.rst, self.syn, self.fin, self.window_size, self.urg_pointer,
             self.data
         )

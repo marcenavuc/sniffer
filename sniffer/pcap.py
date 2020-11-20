@@ -1,4 +1,3 @@
-import os
 import time
 from struct import pack
 
@@ -10,9 +9,9 @@ class PCAPWriter:
         self._thiszone = 5 * 3600
         self._snaplen = 65535
 
-    def dump_frame_to_pcap(self, frame: bytes):
-        self._write_packet_header(frame)
-        self._fh.write(frame)
+    def dump_frame_to_pcap(self, raw_frame: bytes):
+        self._write_packet_header(raw_frame)
+        self._fh.write(raw_frame)
 
     def open(self):
         return self.__enter__()

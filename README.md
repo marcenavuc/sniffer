@@ -1,4 +1,5 @@
 # sniffer
+[![codecov](https://codecov.io/gh/marcenavuc/sniffer/branch/main/graph/badge.svg?token=UQTKD2SQMB)](https://codecov.io/gh/marcenavuc/sniffer)
 
 Автор: Аверченко Марк (https://vk.com/markenus)
 

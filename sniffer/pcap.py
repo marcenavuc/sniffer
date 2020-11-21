@@ -19,11 +19,11 @@ class PCAPWriter:
     def close(self):
         self.__exit__(None, None, None)
 
-    def _write_packet_header(self, frame):
+    def _write_packet_header(self, raw_frame: bytes):
         ts_sec = pack("i", int(time.time()))
         ts_usec = pack("i", 0)
-        incl_len = pack("i", len(frame) % self._snaplen)
-        orig_len = pack("i", len(frame))
+        incl_len = pack("i", len(raw_frame) % self._snaplen)
+        orig_len = pack("i", len(raw_frame))
         data_to_write = [ts_sec, ts_usec, incl_len, orig_len]
 
         for x in data_to_write:

@@ -1,9 +1,9 @@
 import logging
 import socket
 
-from sniffer.frame import EthernetFrame
-from sniffer.packets import IPv4
-from sniffer.segments.tcp import TCP
+from sniffer.protocols.frame import EthernetFrame
+from sniffer.protocols.ipv4 import IPv4
+from sniffer.protocols.tcp import TCP
 
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class Sniffer:
         try:
             self.sniff()
         except Exception as e:
-            logger.error("Fuck! Something went wrong", e)
+            logger.error("Something went wrong", e)
         finally:
             self.close()
 

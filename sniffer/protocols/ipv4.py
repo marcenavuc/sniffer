@@ -1,8 +1,7 @@
-from sniffer.packets import Packet
 import struct
 
 
-class IPv4(Packet):
+class IPv4:
 
     def __init__(self, raw_packet: bytes):
         version_header_len = raw_packet[0]

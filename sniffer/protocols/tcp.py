@@ -1,10 +1,8 @@
 import struct
 import hexdump as hexdump
 
-from sniffer.segments.segment import Segment
 
-
-class TCP(Segment):
+class TCP:
     """
     https://ru.wikipedia.org/wiki/Transmission_Control_Protocol
     """

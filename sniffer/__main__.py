@@ -21,5 +21,5 @@ sniffer = Sniffer(count_of_packets=args.get("count"))
 sniffer.start()
 if args.get("p"):
     with PCAPWriter("sniffer.pcap") as pcap_writer:
-        for raw_frame in sniffer.raw_packets:
+        for raw_frame in iter(sniffer.raw_packets.get, None):
             pcap_writer.dump_frame_to_pcap(raw_frame)

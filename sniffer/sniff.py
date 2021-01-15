@@ -1,5 +1,7 @@
 import logging
 import socket
+import asyncio
+from queue import Queue
 
 from sniffer.protocols import EthernetFrame
 from sniffer.protocols import IPv4
@@ -15,25 +17,25 @@ class Sniffer:
         self.sock = socket.socket(socket.AF_PACKET,
                                   socket.SOCK_RAW,
                                   socket.ntohs(0x0003))
-        self.raw_packets = []
+        self.raw_packets = Queue()
         self.count_of_packets = count_of_packets
-
+        self.loop = asyncio.get_event_loop()
         self.is_end = False
         logger.debug("Sniffer was initialized")
 
     def start(self):
         logger.debug("sniffer was started")
         try:
-            self.sniff()
-        # except Exception as e:
-        #     logger.error("Something went wrong", e)
+            self.loop.run_until_complete(self.sniff())
+        except Exception as e:
+            logger.error("Something went wrong", e)
         finally:
             self.close()
 
-    def sniff(self):
-        while not self.is_end and len(self.raw_packets) < self.count_of_packets:
-            raw_frame: bytes = self.sock.recvfrom(65565)[0]
-            self.raw_packets.append(raw_frame)
+    async def sniff(self):
+        while not self.is_end and self.raw_packets.qsize() < self.count_of_packets:
+            raw_frame: bytes = await self.loop.sock_recv(self.sock, 65565)
+            self.raw_packets.put(raw_frame)
             frame = EthernetFrame.from_bytes(raw_frame)
             logger.info(frame)
 

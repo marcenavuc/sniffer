@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 from sniffer import Sniffer
 from sniffer import parser
@@ -9,7 +10,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(message)s ",
     handlers=[
-        logging.FileHandler("debug.log"),
+        logging.FileHandler(os.path.abspath("debug.txt")),
         logging.StreamHandler(sys.stdout),
     ]
 )

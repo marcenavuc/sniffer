@@ -1,16 +1,17 @@
 import logging
 import socket
 
-from sniffer.protocols.frame import EthernetFrame
-from sniffer.protocols.ipv4 import IPv4
-from sniffer.protocols.tcp import TCP
-
+from sniffer.protocols import EthernetFrame
+from sniffer.protocols import IPv4
+from sniffer.protocols import TCP
+from sniffer.protocols import UDP
 
 logger = logging.getLogger(__name__)
 
 
 class Sniffer:
-    def __init__(self, count_of_packets=10):
+    def __init__(self, count_of_packets=10, udp=True, tcp=True, ip=True,
+                 ips=[], macs=[]):
         self.sock = socket.socket(socket.AF_PACKET,
                                   socket.SOCK_RAW,
                                   socket.ntohs(0x0003))
@@ -24,8 +25,8 @@ class Sniffer:
         logger.debug("sniffer was started")
         try:
             self.sniff()
-        except Exception as e:
-            logger.error("Something went wrong", e)
+        # except Exception as e:
+        #     logger.error("Something went wrong", e)
         finally:
             self.close()
 
@@ -33,7 +34,8 @@ class Sniffer:
         while not self.is_end and len(self.raw_packets) < self.count_of_packets:
             raw_frame: bytes = self.sock.recvfrom(65565)[0]
             self.raw_packets.append(raw_frame)
-            frame = EthernetFrame(raw_frame)
+            # frame = EthernetFrame(raw_frame)
+            frame = EthernetFrame.from_bytes(raw_frame)
             logger.info(frame)
 
             if frame.ether_type == "IPv4":
@@ -42,7 +44,9 @@ class Sniffer:
 
                 if packet.protocol == 6:
                     segment = TCP(packet.data)
-                    logger.info(segment)
+                if packet.protocol == 17:
+                    segment = UDP(packet.data)
+                logger.info(segment)
         self.close()
 
     def close(self):

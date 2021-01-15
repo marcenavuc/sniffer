@@ -1,5 +1,5 @@
 import struct
-import hexdump as hexdump
+import hexdump
 
 
 class TCP:
@@ -9,7 +9,7 @@ class TCP:
 
     def __init__(self, raw_segment: bytes):
         self.source_port, self.target_port, self.sequence_number, \
-        self.acknowledgement_number = struct.unpack('! H H L L', raw_segment[:12])
+        self.acknowledgement_number = struct.unpack('!HHLL', raw_segment[:12])
         flags = raw_segment[14]
         self.urg = (flags & 32) >> 5
         self.ack = (flags & 16) >> 4

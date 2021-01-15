@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from sniffer.protocols import Protocol
+from sniffer.protocols import Protocol, IPv4
 
 
 @dataclass
@@ -12,6 +12,10 @@ class EthernetFrame(Protocol):
     ether_types = {
         '0800': 'IPv4',
     }
+
+    def __post_init__(self):
+        if self.ether_type == "IPv4":
+            self.packet = IPv4.from_bytes(self.data)
 
     @classmethod
     def from_bytes(cls, raw_bytes: bytes):
@@ -27,6 +31,6 @@ class EthernetFrame(Protocol):
         return ':'.join(bytes_str).upper()
 
     def __str__(self):
-        return "Source MAC: {}, Target MAC: {}, Protocol: {}".format(
-            self.source_mac, self.destination_mac, self.ether_type
+        return "Source MAC: {}, Target MAC: {}, Protocol: {}\n{}".format(
+            self.source_mac, self.destination_mac, self.ether_type, self.packet
         )

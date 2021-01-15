@@ -1,7 +1,7 @@
 import struct
 from dataclasses import dataclass
 
-from sniffer.protocols import Protocol
+from sniffer.protocols import Protocol, TCP, UDP
 
 
 @dataclass
@@ -17,6 +17,12 @@ class IPv4(Protocol):
     source_ip: str
     target_ip: str
     data: bytes
+
+    def __post_init__(self):
+        if self.protocol == 6:
+            self.segment = TCP.from_bytes(self.data)
+        if self.protocol == 17:
+            self.segment = UDP.from_bytes(self.data)
 
     @classmethod
     def from_bytes(cls, raw_bytes: bytes):
@@ -41,6 +47,7 @@ class IPv4(Protocol):
 
     def __str__(self):
         return "IPv4 Packet: Header_lenght: {}, Protocol: {}, Target: {}, " \
-               "Source: {}".format(
-            self.header_len, self.protocol, self.target_ip, self.source_ip
+               "Source: {}\n{}".format(
+            self.header_len, self.protocol, self.target_ip, self.source_ip,
+            self.segment
         )

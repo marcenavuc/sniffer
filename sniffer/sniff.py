@@ -36,18 +36,8 @@ class Sniffer:
         while not self.is_end and self.raw_packets.qsize() < self.count_of_packets:
             raw_frame: bytes = await self.loop.sock_recv(self.sock, 65565)
             self.raw_packets.put(raw_frame)
-            frame = EthernetFrame.from_bytes(raw_frame)
-            logger.info(frame)
-
-            if frame.ether_type == "IPv4":
-                packet = IPv4.from_bytes(frame.data)
-                logger.info(packet)
-
-                if packet.protocol == 6:
-                    segment = TCP.from_bytes(packet.data)
-                if packet.protocol == 17:
-                    segment = UDP.from_bytes(packet.data)
-                logger.info(segment)
+            packet = EthernetFrame.from_bytes(raw_frame)
+            logger.info(packet)
         self.close()
 
     def close(self):

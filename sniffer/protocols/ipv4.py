@@ -1,21 +1,39 @@
 import struct
+from dataclasses import dataclass
+
+from sniffer.protocols import Protocol
 
 
-class IPv4:
+@dataclass
+class IPv4(Protocol):
+    version: int
+    header_len: int
+    packet_size: int
+    id: int
+    flags: int
+    offset: int
+    time_to_live: int
+    protocol: int
+    source_ip: str
+    target_ip: str
+    data: bytes
 
-    def __init__(self, raw_packet: bytes):
-        version_header_len = raw_packet[0]
-        self.version = version_header_len >> 4
-        self.header_len = (version_header_len & 15) * 4
-        self.packet_size = int.from_bytes(raw_packet[2:4], byteorder='big')
-        self.id = int.from_bytes(raw_packet[4:6], byteorder='big')
-        flags_offset = int.from_bytes(raw_packet[6:8], byteorder='big')
-        self.flags = flags_offset >> 13
-        self.offset = (flags_offset & 127) * 3
-        self.time_to_live, self.protocol = struct.unpack('! B B', raw_packet[8:10])
-        self.source_ip = self.ipv4(raw_packet[12:16])
-        self.target_ip = self.ipv4(raw_packet[16:20])
-        self.data = raw_packet[self.header_len:]
+    @classmethod
+    def from_bytes(cls, raw_bytes: bytes):
+        version_header_len = raw_bytes[0]
+        version = version_header_len >> 4
+        header_len = (version_header_len & 15) * 4
+        packet_size = int.from_bytes(raw_bytes[2:4], byteorder='big')
+        id = int.from_bytes(raw_bytes[4:6], byteorder='big')
+        flags_offset = int.from_bytes(raw_bytes[6:8], byteorder='big')
+        flags = flags_offset >> 13
+        offset = (flags_offset & 127) * 3
+        time_to_live, protocol = struct.unpack('!BB', raw_bytes[8:10])
+        source_ip = cls.ipv4(raw_bytes[12:16])
+        target_ip = cls.ipv4(raw_bytes[16:20])
+        data = raw_bytes[header_len:]
+        return cls(version, header_len, packet_size, id, flags, offset,
+                   time_to_live, protocol, source_ip, target_ip, data)
 
     @staticmethod
     def ipv4(address: bytes) -> str:

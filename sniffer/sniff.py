@@ -3,7 +3,7 @@ import socket
 from queue import Queue
 from threading import Event
 
-from sniffer.protocols import EthernetFrame
+from sniffer.protocols import EthernetFrame, IPv4, TCP, UDP
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +14,10 @@ class Sniffer:
         self.sock = socket.socket(socket.AF_PACKET,
                                   socket.SOCK_RAW,
                                   socket.ntohs(0x0003))
+        self.udp = udp
+        self.tcp = tcp
+        self.ips = ips
+        self.macs = macs
         self.raw_packets = Queue()
         self.count_of_packets = count_of_packets
         self.is_end = False
@@ -27,7 +31,9 @@ class Sniffer:
         logger.debug("sniffer was started")
         try:
             while not self.is_end and self.raw_packets.qsize() < self.count_of_packets:
-                packets.put(self.sniff()[0])
+                result = self.sniff()
+                if result:
+                    packets.put(result[0])
             self.close()
         except KeyboardInterrupt:
             logger.info("Closing sniffer")
@@ -39,9 +45,20 @@ class Sniffer:
     def sniff(self):
         raw_frame: bytes = self.sock.recv(65565)
         packet = EthernetFrame.from_bytes(raw_frame)
-        logger.info(packet)
-        self.raw_packets.put(raw_frame)
-        return raw_frame, packet
+        if self.filter_packet(packet):
+            logger.info(packet)
+            self.raw_packets.put(raw_frame)
+            return raw_frame, packet
+
+    def filter_packet(self, packet):
+        if packet.source_mac in self.macs or packet.destination_mac in self.macs:
+            return True
+        ipv4: IPv4 = packet.packet
+        if ipv4.source_ip in self.ips or ipv4.target_ip in self.ips:
+            return True
+        segment = ipv4.segment
+        return self.tcp and isinstance(segment, TCP) or self.udp \
+               and isinstance(segment, UDP)
 
     def close(self):
         self.is_end = True

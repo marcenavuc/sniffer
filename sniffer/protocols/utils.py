@@ -11,7 +11,7 @@ class Mac:
 
 
 @dataclass
-class Ip:
+class IP:
     address: bytes
 
     def __str__(self) -> str:

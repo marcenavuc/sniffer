@@ -15,9 +15,7 @@ class UDP(Protocol):
 
     @classmethod
     def from_bytes(cls, raw_bytes: bytes):
-        source_port, target_port, size = struct.unpack(
-            "!HHH", raw_bytes[:6]
-        )
+        source_port, target_port, size = struct.unpack("!HHH", raw_bytes[:6])
         data = hexdump.hexdump(raw_bytes[8:], "return")
         return cls(source_port, target_port, size, data)
 

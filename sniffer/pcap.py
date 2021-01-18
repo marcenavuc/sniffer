@@ -13,6 +13,10 @@ class PCAPWriter:
         self._write_packet_header(raw_frame)
         self._fh.write(raw_frame)
 
+    def thread_dump(self, packets_queue, event):
+        while not event.is_set() or not packets_queue.empty():
+            self.dump_frame_to_pcap(packets_queue.get())
+
     def open(self):
         return self.__enter__()
 

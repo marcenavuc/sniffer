@@ -2,6 +2,7 @@ import struct
 from dataclasses import dataclass
 
 from sniffer.protocols import Protocol, TCP, UDP
+from sniffer.protocols.utils import Ip
 
 
 @dataclass
@@ -35,15 +36,11 @@ class IPv4(Protocol):
         flags = flags_offset >> 13
         offset = (flags_offset & 127) * 3
         time_to_live, protocol = struct.unpack('!BB', raw_bytes[8:10])
-        source_ip = cls.ipv4(raw_bytes[12:16])
-        target_ip = cls.ipv4(raw_bytes[16:20])
+        source_ip = Ip(raw_bytes[12:16])
+        target_ip = Ip(raw_bytes[16:20])
         data = raw_bytes[header_len:]
         return cls(version, header_len, packet_size, id, flags, offset,
                    time_to_live, protocol, source_ip, target_ip, data)
-
-    @staticmethod
-    def ipv4(address: bytes) -> str:
-        return '.'.join(map(str, address))
 
     def __str__(self):
         return "IPv4 Packet: Header_lenght: {}, Protocol: {}, Target: {}, " \

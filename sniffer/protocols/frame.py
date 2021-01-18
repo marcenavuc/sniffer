@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 
 from sniffer.protocols import Protocol, IPv4
+from sniffer.protocols.utils import Mac
 
 
 @dataclass
 class EthernetFrame(Protocol):
-    destination_mac: str
-    source_mac: str
+    destination_mac: Mac
+    source_mac: Mac
     ether_type: str
     data: bytes
     ether_types = {
@@ -19,8 +20,8 @@ class EthernetFrame(Protocol):
 
     @classmethod
     def from_bytes(cls, raw_bytes: bytes):
-        destination_mac = cls.format_mac(raw_bytes[0:6])
-        source_mac = cls.format_mac(raw_bytes[6:12])
+        destination_mac = Mac(raw_bytes[0:6])
+        source_mac = Mac(raw_bytes[6:12])
         ether_type = cls.ether_types.get(raw_bytes[12:14].hex())
         data = raw_bytes[14:]
         return cls(destination_mac, source_mac, ether_type, data)

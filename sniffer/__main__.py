@@ -1,6 +1,9 @@
 import logging
+import threading
+import concurrent.futures
 import sys
 import os
+from queue import Queue
 
 from sniffer import Sniffer
 from sniffer import parser
@@ -15,11 +18,13 @@ logging.basicConfig(
     ]
 )
 
-args = parser.parse_args().__dict__
-
-sniffer = Sniffer(count_of_packets=args.get("count"))
-sniffer.start()
-if args.get("p"):
-    with PCAPWriter("sniffer.pcap") as pcap_writer:
-        for raw_frame in iter(sniffer.raw_packets.get, None):
-            pcap_writer.dump_frame_to_pcap(raw_frame)
+args = parser.parse_args()
+event = threading.Event()
+packets_queue = Queue()
+sniffer = Sniffer(count_of_packets=args.count)
+with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+    executor.submit(sniffer.thread_start, packets_queue, event)
+    if not args.nopcap:
+        pcap_writer = PCAPWriter(args.file)
+        executor.submit(pcap_writer.dump_frame_to_pcap, packets_queue, event)
+    event.set()

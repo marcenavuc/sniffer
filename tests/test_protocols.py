@@ -4,7 +4,7 @@ from sniffer.protocols.ipv4 import IPv4
 
 
 def test_tcp():
-    tcp = TCP(b'\xcfz\x01\xbb+\t:?\xb78\\k\x83\xb78[\x16\xd2xb78[\x16\x88\x01'
+    tcp = TCP.from_bytes(b'\xcfz\x01\xbb+\t:?\xb78\\k\x83\xb78[\x16\xd2xb78[\x16\x88\x01'
               b'\x03\x01\x01\x05\n\xb78[\x16\xb78\\k'
               )
     assert 53114 == tcp.source_port
@@ -22,7 +22,7 @@ def test_tcp():
 
 
 def test_frame():
-    frame = EthernetFrame(
+    frame = EthernetFrame.from_bytes(
         b'\n\xfb\xecX\xb7_\xa4\xca\xa0}\xa6}\x08\x00E\x00\x00(\xab\x7f@'
         b'\x004\x06o\xce]'
     )
@@ -33,7 +33,7 @@ def test_frame():
 
 
 def test_ipv4():
-    packet = IPv4(
+    packet = IPv4.from_bytes(
         b'E(\x00(\x88\x1e@\x00:\x06\x1e\tW\xf0\x81\x83\xc0\xa8\x00e\x01'
         b'\xbb\xfd\xad\x9c\x8a@\xddD\x05'
     )

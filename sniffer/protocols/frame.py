@@ -11,7 +11,7 @@ class EthernetFrame(Protocol):
     ether_type: str
     data: bytes
     ether_types = {
-        '0800': 'IPv4',
+        "0800": "IPv4",
     }
 
     def __post_init__(self):
@@ -28,8 +28,8 @@ class EthernetFrame(Protocol):
 
     @staticmethod
     def format_mac(address: bytes) -> str:
-        bytes_str = list(map('{:02x}'.format, address))
-        return ':'.join(bytes_str).upper()
+        bytes_str = list(map("{:02x}".format, address))
+        return ":".join(bytes_str).upper()
 
     def __str__(self):
         return "Source MAC: {}, Target MAC: {}, Protocol: {}\n{}".format(

@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class Protocol(ABC):
-
     @classmethod
     @abstractmethod
     def from_bytes(cls, raw_bytes: bytes):
@@ -18,6 +17,6 @@ class Protocol(ABC):
         for i in range(0, len(msg), 2):
             part = (msg[i] << 8) + (msg[i + 1])
             checksum += part
-        checksum = (checksum >> 16) + (checksum & 0xffff)
+        checksum = (checksum >> 16) + (checksum & 0xFFFF)
 
-        return checksum ^ 0xffff
+        return checksum ^ 0xFFFF

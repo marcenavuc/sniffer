@@ -10,4 +10,3 @@ def test_sniff(fake_recv):
         sniffer.start()
 
         assert sniffer.raw_packets.get() == fake_recv
-

@@ -9,11 +9,18 @@ logger = logging.getLogger(__name__)
 
 
 class Sniffer:
-    def __init__(self, count_of_packets=10, udp=True, tcp=True,
-                 ips=[], macs=[], validate_packets=False):
-        self.sock = socket.socket(socket.AF_PACKET,
-                                  socket.SOCK_RAW,
-                                  socket.ntohs(0x0003))
+    def __init__(
+        self,
+        count_of_packets=10,
+        udp=True,
+        tcp=True,
+        ips=[],
+        macs=[],
+        validate_packets=False,
+    ):
+        self.sock = socket.socket(
+            socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003)
+        )
         self.validate_packets = validate_packets
         self.udp = udp
         self.tcp = tcp
@@ -54,15 +61,18 @@ class Sniffer:
             return raw_frame, packet
 
     def filter_packet(self, packet: EthernetFrame):
-        if packet.source_mac in self.macs \
-                or packet.destination_mac in self.macs:
+        if packet.source_mac in self.macs or packet.destination_mac in self.macs:
             return True
         ipv4: IPv4 = packet.ip
         if ipv4.source_ip in self.ips or ipv4.target_ip in self.ips:
             return True
         segment = ipv4.segment
-        return self.tcp and isinstance(segment, TCP) or self.udp \
-               and isinstance(segment, UDP)
+        return (
+            self.tcp
+            and isinstance(segment, TCP)
+            or self.udp
+            and isinstance(segment, UDP)
+        )
 
     @staticmethod
     def validate_check_sum(packet: EthernetFrame):

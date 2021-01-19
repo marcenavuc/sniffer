@@ -3,7 +3,6 @@ from struct import pack
 
 
 class PCAPWriter:
-
     def __init__(self, filename: str):
         self.filename = filename
         self._thiszone = 5 * 3600
@@ -34,7 +33,7 @@ class PCAPWriter:
             self._fh.write(x)
 
     def __enter__(self):
-        self._fh = open(self.filename, 'wb+', buffering=8192)
+        self._fh = open(self.filename, "wb+", buffering=8192)
         magic_number = bytes.fromhex("d4c3b2a1")
         major_ver = pack("H", 2)
         minor_ver = pack("H", 4)
@@ -43,8 +42,15 @@ class PCAPWriter:
         snaplen = pack("i", self._snaplen)
         network = pack("i", 1)
 
-        data_to_write = [magic_number, major_ver,
-                         minor_ver, thiszone, sigfigs, snaplen, network]
+        data_to_write = [
+            magic_number,
+            major_ver,
+            minor_ver,
+            thiszone,
+            sigfigs,
+            snaplen,
+            network,
+        ]
 
         for x in data_to_write:
             self._fh.write(x)

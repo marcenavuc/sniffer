@@ -10,10 +10,11 @@ logger = logging.getLogger(__name__)
 
 class Sniffer:
     def __init__(self, count_of_packets=10, udp=True, tcp=True,
-                 ips=[], macs=[]):
+                 ips=[], macs=[], validate_packets=False):
         self.sock = socket.socket(socket.AF_PACKET,
                                   socket.SOCK_RAW,
                                   socket.ntohs(0x0003))
+        self.validate_packets = validate_packets
         self.udp = udp
         self.tcp = tcp
         self.ips = ips
@@ -27,12 +28,12 @@ class Sniffer:
         while not event.is_set():
             self.start(packets)
 
-    def start(self, packets: Queue):
+    def start(self, packets: Queue = None):
         logger.debug("sniffer was started")
         try:
             while not self.is_end and self.raw_packets.qsize() < self.count_of_packets:
                 result = self.sniff()
-                if result:
+                if result and packets:
                     packets.put(result[0])
             self.close()
         except KeyboardInterrupt:
@@ -45,7 +46,7 @@ class Sniffer:
     def sniff(self):
         raw_frame: bytes = self.sock.recv(65565)
         packet = EthernetFrame.from_bytes(raw_frame)
-        if not self.validate_check_sum(packet):
+        if self.validate_packets and not self.validate_check_sum(packet):
             logger.info("This packet is corrupted")
         if self.filter_packet(packet):
             logger.info(packet)

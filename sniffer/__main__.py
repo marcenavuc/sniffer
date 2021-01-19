@@ -21,8 +21,11 @@ logging.basicConfig(
 args = parser.parse_args()
 event = threading.Event()
 packets_queue = Queue()
-sniffer = Sniffer(count_of_packets=args.count, ips=args.ips, macs=args.macs,
-                  tcp=args.notcp, udp=args.noudp)
+
+sniffer = Sniffer(count_of_packets=args.count, ips=args.ips,
+                  macs=args.macs, tcp=args.notcp, udp=args.noudp,
+                  validate_packets=args.validate)
+
 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
     executor.submit(sniffer.thread_start, packets_queue, event)
     if not args.nopcap:

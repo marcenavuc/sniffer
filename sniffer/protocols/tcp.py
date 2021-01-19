@@ -8,9 +8,6 @@ from sniffer.protocols import Protocol
 
 @dataclass
 class TCP(Protocol):
-    """
-    https://ru.wikipedia.org/wiki/Transmission_Control_Protocol
-    """
     source_port: int
     target_port: int
     sequence_number: int

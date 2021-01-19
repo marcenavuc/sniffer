@@ -16,7 +16,7 @@ class EthernetFrame(Protocol):
 
     def __post_init__(self):
         if self.ether_type == "IPv4":
-            self.packet = IPv4.from_bytes(self.data)
+            self.ip = IPv4.from_bytes(self.data)
 
     @classmethod
     def from_bytes(cls, raw_bytes: bytes):
@@ -33,5 +33,5 @@ class EthernetFrame(Protocol):
 
     def __str__(self):
         return "Source MAC: {}, Target MAC: {}, Protocol: {}\n{}".format(
-            self.source_mac, self.destination_mac, self.ether_type, self.packet
+            self.source_mac, self.destination_mac, self.ether_type, self.ip
         )

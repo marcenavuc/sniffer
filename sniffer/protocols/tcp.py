@@ -3,9 +3,11 @@ from dataclasses import dataclass
 
 import hexdump
 
+from sniffer.protocols import Protocol
+
 
 @dataclass
-class TCP:
+class TCP(Protocol):
     """
     https://ru.wikipedia.org/wiki/Transmission_Control_Protocol
     """
@@ -22,6 +24,7 @@ class TCP:
     window_size: int
     urg_pointer: int
     data: str
+    raw: bytes
 
     @classmethod
     def from_bytes(cls, raw_segment: bytes):
@@ -37,9 +40,10 @@ class TCP:
         window_size = int.from_bytes(raw_segment[14:16], byteorder='big')
         urg_pointer = int.from_bytes(raw_segment[18:20], byteorder='big')
         data = hexdump.hexdump(raw_segment[24:], 'return')
+        raw = raw_segment
         return cls(source_port, target_port, sequence_number,
                    acknowledgement_number, urg, ack, psh, rst, syn, fin,
-                   window_size, urg_pointer, data)
+                   window_size, urg_pointer, data, raw)
 
     def __str__(self):
         return 'TCP Segment: Source port: {} Target port: {} Sequence: {} ' \
@@ -51,3 +55,10 @@ class TCP:
             self.rst, self.syn, self.fin, self.window_size, self.urg_pointer,
             self.data
         )
+
+    @property
+    def is_valid(self):
+        bytes_packet = self.raw
+        if len(self.raw) % 2 != 0:
+            bytes_packet += b"\x00"
+        return not self.get_checksum(bytes_packet)

@@ -18,6 +18,7 @@ class IPv4(Protocol):
     source_ip: IP
     target_ip:  IP
     data: bytes
+    raw_ip: bytes
 
     def __post_init__(self):
         if self.protocol == 6:
@@ -39,8 +40,9 @@ class IPv4(Protocol):
         source_ip = IP(raw_bytes[12:16])
         target_ip = IP(raw_bytes[16:20])
         data = raw_bytes[header_len:]
+        raw_ip = raw_bytes
         return cls(version, header_len, packet_size, id, flags, offset,
-                   time_to_live, protocol, source_ip, target_ip, data)
+                   time_to_live, protocol, source_ip, target_ip, data, raw_ip)
 
     def __str__(self):
         return "IPv4 Packet: Header_lenght: {}, Protocol: {}, Target: {}, " \
@@ -48,3 +50,7 @@ class IPv4(Protocol):
             self.header_len, self.protocol, self.target_ip, self.source_ip,
             self.segment
         )
+
+    @property
+    def is_valid(self):
+        return not self.get_checksum(self.raw_ip[:self.header_len])

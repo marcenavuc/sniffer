@@ -9,6 +9,11 @@ class Mac:
         bytes_str = list(map('{:02x}'.format, self.raw_mac))
         return ':'.join(bytes_str).upper()
 
+    def __eq__(self, other):
+        if isinstance(other, Mac):
+            return self.raw_mac == other.raw_mac
+        return self.__str__() == other
+
 
 @dataclass
 class IP:
@@ -16,3 +21,8 @@ class IP:
 
     def __str__(self) -> str:
         return '.'.join(map(str, self.address))
+
+    def __eq__(self, other):
+        if isinstance(other, IP):
+            return self.address == other.address
+        return self.__str__() == other

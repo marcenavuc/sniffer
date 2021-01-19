@@ -13,6 +13,6 @@ parser.add_argument("--noudp", "-nu", help="exclude udp",
 parser.add_argument("--notcp", "-", help="exclude tcp",
                     action="store_false")
 parser.add_argument("--macs", "-m", help="include only this mac address",
-                    default=[])
+                    default=[], nargs="+")
 parser.add_argument("--ips", "-i", help="include only this ip address",
-                    default=[])
+                    default=[], nargs="+")

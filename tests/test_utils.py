@@ -26,7 +26,7 @@ def test_ip(ip_arg, address, result):
         (b"\xa8\x1e\x35\x8b\x16\xe2", "A8:1E:84:8B:16:E2", False),
     ],
 )
-def test_ip(mac_arg, address, result):
+def test_mac(mac_arg, address, result):
     actual = Mac(mac_arg) == address
     print(Mac(mac_arg))
     assert actual == result

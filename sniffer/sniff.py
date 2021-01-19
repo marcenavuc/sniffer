@@ -14,8 +14,8 @@ class Sniffer:
         count_of_packets=10,
         udp=True,
         tcp=True,
-        ips=[],
-        macs=[],
+        ips=None,
+        macs=None,
         validate_packets=False,
     ):
         self.sock = socket.socket(
@@ -24,8 +24,8 @@ class Sniffer:
         self.validate_packets = validate_packets
         self.udp = udp
         self.tcp = tcp
-        self.ips = ips
-        self.macs = macs
+        self.ips = ips if ips else []
+        self.macs = macs if macs else []
         self.raw_packets = Queue()
         self.count_of_packets = count_of_packets
         self.is_end = False
@@ -69,12 +69,9 @@ class Sniffer:
         if ipv4.source_ip in self.ips or ipv4.target_ip in self.ips:
             return True
         segment = ipv4.segment
-        return (
-            self.tcp
-            and isinstance(segment, TCP)
-            or self.udp
-            and isinstance(segment, UDP)
-        )
+        is_tcp = self.tcp and isinstance(segment, TCP)
+        is_udp = self.udp and isinstance(segment, UDP)
+        return is_tcp or is_udp
 
     @staticmethod
     def validate_check_sum(packet: EthernetFrame):

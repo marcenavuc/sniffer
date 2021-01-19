@@ -1,4 +1,3 @@
-from queue import Queue
 from unittest import mock
 from sniffer import Sniffer
 

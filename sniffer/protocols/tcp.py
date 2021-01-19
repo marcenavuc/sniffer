@@ -63,7 +63,8 @@ class TCP(Protocol):
         return (
             "TCP Segment: Source port: {} Target port: {} Sequence: {} "
             "Acknowledgement: {} Flags: URG: {} ACK: {} PSH: {} RST: {} "
-            "SYN: {} FIN: {} Window size: {} URG pointer: {} \nData: \n{}".format(
+            "SYN: {} FIN: {} Window size: {} URG pointer: {}"
+            "\nData: \n{}".format(
                 self.source_port,
                 self.target_port,
                 self.sequence_number,

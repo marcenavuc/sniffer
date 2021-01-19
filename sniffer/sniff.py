@@ -38,7 +38,8 @@ class Sniffer:
     def start(self, packets: Queue = None):
         logger.debug("sniffer was started")
         try:
-            while not self.is_end and self.raw_packets.qsize() < self.count_of_packets:
+            while not self.is_end \
+                    and self.raw_packets.qsize() < self.count_of_packets:
                 result = self.sniff()
                 if result and packets:
                     packets.put(result[0])
@@ -61,7 +62,8 @@ class Sniffer:
             return raw_frame, packet
 
     def filter_packet(self, packet: EthernetFrame):
-        if packet.source_mac in self.macs or packet.destination_mac in self.macs:
+        if packet.source_mac in self.macs \
+                or packet.destination_mac in self.macs:
             return True
         ipv4: IPv4 = packet.ip
         if ipv4.source_ip in self.ips or ipv4.target_ip in self.ips:

@@ -5,8 +5,9 @@ parser.add_argument(
     "--nopcap", "-np", help="don't save pcap file", action="store_false"
 )
 parser.add_argument(
-    "--count", help="how many packets should be collected", default=10, type=int
-)
+    "--count", help="how many packets should be collected",
+    default=10,
+    type=int)
 parser.add_argument(
     "--file", "-f", help="set path to pcap file", default="sniffer.pcap"
 )

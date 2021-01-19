@@ -1,5 +1,6 @@
 # sniffer
 [![codecov](https://codecov.io/gh/marcenavuc/sniffer/branch/main/graph/badge.svg?token=UQTKD2SQMB)](https://codecov.io/gh/marcenavuc/sniffer)
+[![Build Status](https://travis-ci.com/marcenavuc/sniffer.svg?branch=main)](https://travis-ci.com/marcenavuc/sniffer)
 
 Автор: Аверченко Марк (https://vk.com/markenus)
 
@@ -39,14 +40,22 @@ $ python3 setup.py install
 * Тесты: **tests/**
 
 ## Использование
-`sudo venv/bin/python3.8 -m sniffer`
+` sudo venv/bin/python -m sniffer --count 1 --mac A8:1E:84:8B:16:E2`
 
 ```
-usage: -m [-h] [-p] [-v] [--count COUNT]
+usage: -m [-h] [--nopcap] [--count COUNT] [--file FILE] [--noudp] [--notcp] [--macs MACS [MACS ...]] [--ips IPS [IPS ...]] [--validate]
 
 optional arguments:
-  -h, --help     show this help message and exit
-  -p             don't save pcap file
-  -v             print packets?
-  --count COUNT  how many packets should be collected
+  -h, --help            show this help message and exit
+  --nopcap, -np         don't save pcap file
+  --count COUNT         how many packets should be collected
+  --file FILE, -f FILE  set path to pcap file
+  --noudp, -nu          exclude udp
+  --notcp, -            exclude tcp
+  --macs MACS [MACS ...], -m MACS [MACS ...]
+                        include only this mac address
+  --ips IPS [IPS ...], -i IPS [IPS ...]
+                        include only this ip address
+  --validate, -v        if it's set, sniffer will validate packets
+
 ```

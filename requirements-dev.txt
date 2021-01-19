@@ -1,3 +1,4 @@
+-r requirements-dev.txt
 pytest
 black
 isort
